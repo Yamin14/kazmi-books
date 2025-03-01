@@ -1,50 +1,44 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Loading from "../Components/Loading";
 import api from "../api";
 import { Book } from "../types/book";
-import { useNavigate } from "react-router";
-import { BsInfoCircle } from "react-icons/bs";
-import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+import BookCard from "../Components/BookCard";
+import { useBookNav } from "../types/openPages";
+import GenreHeading from "../Components/GenreHeading";
 
 const BooksPage = () => {
 
     const [loading, setLoading] = useState(true);
     const [books, setBooks] = useState<Book[]>([]);
+    const { OpenAddBookPage } = useBookNav();
 
     //get books
     useEffect(() => {
-        setLoading(false);
-        api.get("/books")
-            .then((res) => {
-                setLoading(false);
-                setBooks(res.data.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        const getBooks = async () => {
+            setLoading(false);
+            await api.get("/books")
+                .then((res) => {
+                    setLoading(false);
+                    setBooks(res.data.data); //books
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+        getBooks();
     }, [])
 
-    //add new book page
-    const nav = useNavigate();
-    const OpenAddBookPage = () => {
-        nav('/books/add');
-    }
-
-    //edit page
-    const OpenEditBookPage = (id: string) => {
-        nav(`/books/edit/${id}`);
-    }
-
-    //delete page
-    const OpenDeleteBookPage = (id: string) => {
-        nav(`/books/delete/${id}`);
-    }
-
-    //details page
-    const OpenBookDetailsPage = (id: string) => {
-        nav(`/books/${id}`);
-    }
+    //group books by genre
+    const grouped = useMemo(() => {
+        return books.reduce((acc, book) => {
+            if (!acc[book.genre]) {
+                acc[book.genre] = []; //create array for genre if not already exists
+            }
+            acc[book.genre].push(book); //add book to genre
+            return acc;
+        }, {} as Record<string, Book[]>);
+    }, [books])
 
     //loading
     if (loading)
@@ -52,61 +46,31 @@ const BooksPage = () => {
 
     //return
     return (
-        <div className="text-center font-sans">
-            <h1 className="font-bold text-4xl m-4 bg-gray-800 p-4">Browse Books</h1>
+        <div className="text-center">
+            <h1 className="font-bold text-4xl m-4 bg-gray-800 p-4">
+                List of Books
+            </h1>
 
             {/* Add Button */}
             <button onClick={OpenAddBookPage}
-                className="button">
-                Add New Book
+                className="button !rounded-full fixed text-4xl bottom-1 right-1 md:bottom-3 md:right-3">
+                +
             </button>
 
             {/* Grid */}
-            <div
-                className="my-6 grid place-items-center gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {books.map((book) => {
-                    return (
-                        <div key={book._id}
-                            className="w-2xs p-4
-                                rounded-lg shadow-lg bg-gray-900
-                                border-2 border-gray-700
-                                hover:border-black hover:shadow-xl transition-300">
-
-                            {/* Cover Image */}
-                            <img src={book.coverImage
-                                ? `http://localhost:3000/${book.coverImage}`
-                                : '/no_cover.jpg'} 
-                                className="h-40 w-40 mx-auto" />
-
-                            {/* Book Details */}
-                            <h1 className="text-lg font-semibold m-2 truncate hover:underline hover:text-blue-500 hover:cursor-pointer"
-                                onClick={() => OpenBookDetailsPage(book._id)}>
-                                {book.title}</h1>
-                            <p className="text-md text-gray-300 truncate">Author: {book.author}</p>
-                            <p className="text-md text-gray-300">Price: Rs. {book.price}</p>
-
-                            {/* Buttons */}
-                            <div className="m-2.5 mt-4 flex justify-evenly items-center">
-                                <button
-                                    className="hover:cursor-pointer hover:text-blue-500"
-                                    onClick={() => OpenBookDetailsPage(book._id)}>
-                                    <BsInfoCircle />
-                                </button><br />
-                                <button
-                                    className="hover:cursor-pointer hover:text-green-500"
-                                    onClick={() => OpenEditBookPage(book._id)}>
-                                    <AiOutlineEdit />
-                                </button><br />
-                                <button
-                                    className="hover:cursor-pointer hover:text-red-500"
-                                    onClick={() => OpenDeleteBookPage(book._id)}>
-                                    <AiOutlineDelete />
-                                </button>
-                            </div>
-
-                        </div>);
-                })}
-            </div>
+            {Object.entries(grouped).map(([genre, genreBooks]) => (
+                <div className="my-5" key={genre}>
+                    <GenreHeading heading={genre} />
+                    <div
+                        className="my-6 grid place-items-center gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {genreBooks.map((book) => {
+                            return (
+                                <BookCard book={book} key={book._id} />
+                            );
+                        })}
+                    </div>
+                </div>
+            ))}
 
         </div>
     )

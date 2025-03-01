@@ -27,6 +27,11 @@ const AddBookPage = () => {
     setFormData({ ...formData, [name]: value });
   }
 
+  //handle gerne change
+  const handleGenreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData({ ...formData, genre: e.target.value });
+  }
+
   //handle image change
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -68,7 +73,7 @@ const AddBookPage = () => {
       <BackButton />
       <h1 className="font-bold text-5xl text-center m-4">Add New Book</h1>
       <BookForm formData={formData} 
-        handleChange={handleChange} handleSubmit={handleSubmit}
+        handleChange={handleChange} handleSubmit={handleSubmit} handleGenreChange={handleGenreChange}
         handleImageChange={handleImageChange} imagePreview={imagePreview} />
     </div>
   )

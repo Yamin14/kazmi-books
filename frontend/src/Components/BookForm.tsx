@@ -11,12 +11,17 @@ interface Props {
     },
     imagePreview: string | null,
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    handleGenreChange: (e: React.ChangeEvent<HTMLSelectElement>) => void,
     handleImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
 }
 
 //form
-const BookForm = ({ formData, handleChange, handleSubmit, handleImageChange, imagePreview }: Props) => {
+const BookForm = ({ formData, handleChange, handleSubmit,
+    handleGenreChange, handleImageChange, imagePreview }: Props) => {
+
+    //genres
+    const genres = ["Fiction", "Self-Improvement", "Biography", "Islam", "Business", "History", "Novel"]
 
     //return
     return (
@@ -33,7 +38,7 @@ const BookForm = ({ formData, handleChange, handleSubmit, handleImageChange, ima
                 accept="image/*"
                 name="cover"
                 onChange={handleImageChange}
-                className="font-sans w-64 py-1 px-2.5 border-2 rounded" />
+                className="w-64 py-1 px-2.5 border-2 rounded" />
             <div></div>
             {imagePreview &&
                 <img src={imagePreview}
@@ -50,7 +55,7 @@ const BookForm = ({ formData, handleChange, handleSubmit, handleImageChange, ima
                 placeholder="Enter book title"
                 onChange={handleChange}
                 required
-                className="font-sans w-64 py-1 px-2.5 border-2 rounded" />
+                className="w-64 py-1 px-2.5 border-2 rounded" />
         </div>
         
         {/* Author */}
@@ -63,20 +68,22 @@ const BookForm = ({ formData, handleChange, handleSubmit, handleImageChange, ima
                 placeholder="Enter author's name"
                 onChange={handleChange}
                 required
-                className="font-sans w-64 py-1 px-2.5 border-2 rounded" />
+                className="w-64 py-1 px-2.5 border-2 rounded" />
         </div>
         
         {/* Genre */}
         <div className="w-full grid grid-cols-2">
             <label className="font-medium text-2xl">Genre:</label>
-            <input 
-                type="text"
-                name="genre"
-                value={formData.genre}
-                placeholder="Enter genre"
-                onChange={handleChange}
-                required
-                className="font-sans w-64 py-1 px-2.5 border-2 rounded" />
+            <select name="genre"
+                    value={formData.genre}
+                    onChange={handleGenreChange}
+                    required
+                    className="w-64 py-1 px-2.5 border-2 rounded" >
+                <option value="" selected disabled>Choose a genre</option>
+                {genres.map(genre => (
+                    <option value={genre} className="text-black">{genre}</option>
+                ))}
+            </select>
         </div>
         
         {/* Price */}
@@ -89,7 +96,7 @@ const BookForm = ({ formData, handleChange, handleSubmit, handleImageChange, ima
                 placeholder="Enter price in Rs"
                 onChange={handleChange}
                 required
-                className="font-sans w-64 py-1 px-2.5 border-2 rounded" />
+                className="w-64 py-1 px-2.5 border-2 rounded" />
         </div>
         
         {/* Publish Year */}
@@ -102,7 +109,7 @@ const BookForm = ({ formData, handleChange, handleSubmit, handleImageChange, ima
                 placeholder="Enter publish year (e.g. 2024)"
                 onChange={handleChange}
                 required
-                className="font-sans w-64 py-1 px-2.5 border-2 rounded" />
+                className="w-64 py-1 px-2.5 border-2 rounded" />
         </div>
         
         {/* Submit */}

@@ -36,7 +36,7 @@ const BookDetails = () => {
   return (
     <>
     <BackButton />
-    <div className="flex flex-col justify-center items-center min-h-screen font-sans text-2xl">
+    <div className="flex flex-col justify-center items-center min-h-screen text-2xl">
       <div className="border border-gray-700 text-center py-10 px-14 rounded-lg
         bg-gradient-to-b from-gray-600 to-gray-550">
 
