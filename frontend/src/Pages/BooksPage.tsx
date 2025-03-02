@@ -6,6 +6,7 @@ import { Book } from "../types/book";
 import BookCard from "../Components/BookCard";
 import { useBookNav } from "../types/openPages";
 import GenreHeading from "../Components/GenreHeading";
+import { useSearchStore } from "../store/searchStore";
 
 const BooksPage = () => {
 
@@ -29,16 +30,23 @@ const BooksPage = () => {
         getBooks();
     }, [])
 
+    //filter books based on search
+    const { searchTerm } = useSearchStore();
+    const booksToDisplay = useMemo(() => {
+        return books.filter((book) => book.title.toLowerCase().includes(searchTerm.toLowerCase())
+            || book.author.toLowerCase().includes(searchTerm.toLowerCase()))},
+        [searchTerm, books]);
+
     //group books by genre
     const grouped = useMemo(() => {
-        return books.reduce((acc, book) => {
+        return booksToDisplay.reduce((acc, book) => {
             if (!acc[book.genre]) {
                 acc[book.genre] = []; //create array for genre if not already exists
             }
             acc[book.genre].push(book); //add book to genre
             return acc;
         }, {} as Record<string, Book[]>);
-    }, [books])
+    }, [booksToDisplay]);
 
     //loading
     if (loading)
