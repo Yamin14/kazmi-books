@@ -1,10 +1,11 @@
-import dotenv from "dotenv";
+const dotenv = require('dotenv');
 
 dotenv.config();
 
 const config = {
     port: process.env.PORT,
-    mongoUrl: process.env.mongoUrl
+    mongoUrl: process.env.mongoUrl,
+    TOKEN_KEY: process.env.TOKEN_KEY
 }
 
-export default config;
+module.exports = config

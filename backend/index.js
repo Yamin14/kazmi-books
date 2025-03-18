@@ -1,9 +1,11 @@
+const mongoose = require('mongoose');
+const config = require('./config');
+const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
-import mongoose from "mongoose";
-import config from "./config.js";
-import express from "express";
-import cors from  "cors";
-import bookRoute from './routes/bookRoute.js';
+const bookRoute = require('./routes/bookRoute');
+const AuthRoute = require("./routes/AuthRoute");
 
 //app
 const app = express();
@@ -11,6 +13,7 @@ const app = express();
 //cors and json
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.use('/uploads', express.static("uploads"));
 
 //endpoints
@@ -19,6 +22,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/books", bookRoute);
+app.use("/auth", AuthRoute);
 
 //connect to db
 mongoose.connect(config.mongoUrl)

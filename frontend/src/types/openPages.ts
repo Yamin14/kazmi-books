@@ -3,6 +3,17 @@ import { useNavigate } from "react-router";
 export const useBookNav = () => {
     const nav = useNavigate();
 
+    //home page
+    const OpenHomePage = () => {
+        nav('/');
+    }
+
+    //books list page
+    const OpenBooksPage = () => {
+        nav('/books');
+    }
+
+    //add book page
     const OpenAddBookPage = () => {
         nav('/books/add');
     }
@@ -22,6 +33,19 @@ export const useBookNav = () => {
         nav(`/books/${id}`);
     }
 
-    return { OpenAddBookPage, OpenEditBookPage, OpenDeleteBookPage, OpenBookDetailsPage };
+    //details page
+    const OpenSignupPage = () => {
+        nav(`/auth/signup`);
+    }
+
+    //details page
+    const OpenLoginPage = () => {
+        nav(`/auth/login`);
+    }
+
+    return {
+        OpenHomePage, OpenAddBookPage, OpenEditBookPage, OpenDeleteBookPage,
+        OpenBooksPage, OpenBookDetailsPage, OpenSignupPage, OpenLoginPage
+    };
 
 }

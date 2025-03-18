@@ -1,4 +1,5 @@
 import React from "react"
+import { genres } from "../types/genres"
 
 interface Props {
     formData: {
@@ -20,25 +21,22 @@ interface Props {
 const BookForm = ({ formData, handleChange, handleSubmit,
     handleGenreChange, handleImageChange, imagePreview }: Props) => {
 
-    //genres
-    const genres = ["Fiction", "Self-Improvement", "Biography", "Islam", "Business", "History", "Novel"]
-
     //return
     return (
     <form onSubmit={handleSubmit} encType="multipart/form-data"
         className="form my-4 mx-auto py-8 pb-4 px-16
-            border-2 rounded-2xl w-xl shadow-lg
+            border-2 rounded-2xl w-md md:w-xl shadow-lg
             flex flex-col gap-4.5 justify-center items-center">
         
         {/* Title */}
         <div className="w-full grid grid-cols-2">
-            <label className="font-medium text-2xl">Book Cover:</label>
+            <label className="font-medium text-lg md:text-2xl">Book Cover:</label>
             <input 
                 type="file"
                 accept="image/*"
                 name="cover"
                 onChange={handleImageChange}
-                className="w-64 py-1 px-2.5 border-2 rounded" />
+                className="w-44 md:w-64 py-1 px-2.5 border-2 rounded" />
             <div></div>
             {imagePreview &&
                 <img src={imagePreview}
@@ -47,7 +45,7 @@ const BookForm = ({ formData, handleChange, handleSubmit,
 
         {/* Title */}
         <div className="w-full grid grid-cols-2">
-            <label className="font-medium text-2xl">Title:</label>
+            <label className="font-medium text-lg md:text-2xl">Title:</label>
             <input 
                 type="text"
                 name="title"
@@ -55,12 +53,12 @@ const BookForm = ({ formData, handleChange, handleSubmit,
                 placeholder="Enter book title"
                 onChange={handleChange}
                 required
-                className="w-64 py-1 px-2.5 border-2 rounded" />
+                className="w-44 md:w-64 py-1 px-2.5 border-2 rounded" />
         </div>
         
         {/* Author */}
         <div className="w-full grid grid-cols-2">
-            <label className="font-medium text-2xl">Author:</label>
+            <label className="font-medium text-lg md:text-2xl">Author:</label>
             <input 
                 type="text"
                 name="author"
@@ -68,27 +66,28 @@ const BookForm = ({ formData, handleChange, handleSubmit,
                 placeholder="Enter author's name"
                 onChange={handleChange}
                 required
-                className="w-64 py-1 px-2.5 border-2 rounded" />
+                className="w-44 md:w-64 py-1 px-2.5 border-2 rounded" />
         </div>
         
         {/* Genre */}
         <div className="w-full grid grid-cols-2">
-            <label className="font-medium text-2xl">Genre:</label>
+            <label className="font-medium text-lg md:text-2xl">Genre:</label>
             <select name="genre"
                     value={formData.genre}
                     onChange={handleGenreChange}
                     required
-                    className="w-64 py-1 px-2.5 border-2 rounded" >
+                    className="w-44 md:w-64 py-1 px-2.5 border-2 rounded" >
                 <option value="" selected disabled>Choose a genre</option>
                 {genres.map(genre => (
-                    <option value={genre} className="text-black">{genre}</option>
+                    <option value={genre.value} key={genre.value} className="text-black">
+                        {genre.label}</option>
                 ))}
             </select>
         </div>
         
         {/* Price */}
         <div className="w-full grid grid-cols-2">
-            <label className="font-medium text-2xl">Price:</label>
+            <label className="font-medium text-lg md:text-2xl">Price:</label>
             <input 
                 type="number"
                 name="price"
@@ -96,12 +95,12 @@ const BookForm = ({ formData, handleChange, handleSubmit,
                 placeholder="Enter price in Rs"
                 onChange={handleChange}
                 required
-                className="w-64 py-1 px-2.5 border-2 rounded" />
+                className="w-44 md:w-64 py-1 px-2.5 border-2 rounded" />
         </div>
         
         {/* Publish Year */}
         <div className="w-full grid grid-cols-2">
-            <label className="font-medium text-2xl">Publish Year:</label>
+            <label className="font-medium text-lg md:text-2xl">Publish Year:</label>
             <input 
                 type="number"
                 name="publishYear"
@@ -109,7 +108,7 @@ const BookForm = ({ formData, handleChange, handleSubmit,
                 placeholder="Enter publish year (e.g. 2024)"
                 onChange={handleChange}
                 required
-                className="w-64 py-1 px-2.5 border-2 rounded" />
+                className="w-44 md:w-64 py-1 px-2.5 border-2 rounded" />
         </div>
         
         {/* Submit */}

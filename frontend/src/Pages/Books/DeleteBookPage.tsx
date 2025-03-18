@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router"
-import api from "../api";
+import api from "../../api";
 import Swal from 'sweetalert2';
 
 const DeleteBookPage = () => {
@@ -23,9 +23,9 @@ const DeleteBookPage = () => {
 
   //return
   return (
-    <div className="h-screen flex flex-col justify-center items-center text-3xl">
-      <h1 className="font-bold text-5xl mb-4">Delete Book</h1>
-      <p className="mb-4">Are you sure you want to delete this book?</p>
+    <div className="h-screen flex flex-col justify-center items-center">
+      <h1 className="font-bold text-3xl md:text-5xl mb-4">Delete Book</h1>
+      <p className="mb-4 text-center text-xl md:text-3xl">Are you sure you want to delete this book?</p>
 
       <div className="flex gap-2.5 justify-center text-xl">
         <button className="button button-delete"

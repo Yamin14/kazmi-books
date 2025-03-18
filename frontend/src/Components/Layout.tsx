@@ -8,7 +8,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   //paths
   const location = useLocation();
-  const noFooterPaths = ['/books/'];
+  const noFooterPaths = ['/books/', '/auth/'];
   const navBarPaths = ['/books'];
 
   //return

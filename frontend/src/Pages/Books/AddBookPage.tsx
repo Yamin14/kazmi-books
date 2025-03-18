@@ -1,16 +1,15 @@
-import { useNavigate, useParams } from "react-router"
-import BookForm from "../Components/BookForm";
-import { useEffect, useState } from "react";
-import { FormData } from "../types/FormData";
-import api from "../api";
-import BackButton from "../Components/BackButton";
+import { useState } from "react";
+import BookForm from "../../Components/BookForm"
+import api from "../../api";
+import { FormData } from "../../types/FormData";
+import { useNavigate } from "react-router";
+import BackButton from "../../Components/BackButton";
 import Swal from "sweetalert2";
 
-const EditBookPage = () => {
+const AddBookPage = () => {
 
-  const { id } = useParams();
   const nav = useNavigate();
-  
+
   //form state
   const [formData, setFormData] = useState<FormData>({
     title: "",
@@ -21,29 +20,6 @@ const EditBookPage = () => {
     publishYear: ""
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-
-  //get book
-  useEffect(() => {
-    api.get(`/books/${id}`)
-      .then((res) => {
-        const book = res.data;
-        setFormData({
-          title: book.title,
-          author: book.author,
-          cover: book.coverImage,
-          genre: book.genre,
-          price: String(book.price),
-          publishYear: String(book.publishYear)
-        });
-
-        //cover image
-        if (book.coverImage)
-          setImagePreview(`http://localhost:3000/${book.coverImage}`);
-        else
-          setImagePreview('/no_cover.jpg');
-      })
-      .catch(err => console.log(err));
-  }, []);
 
   //handle value change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,7 +45,7 @@ const EditBookPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    //update
+    //post
     const formDataToSend = {
       title: formData.title,
       author: formData.author,
@@ -79,26 +55,28 @@ const EditBookPage = () => {
       publishYear: Number(formData.publishYear)
     }
 
-    api.put(`/books/${id}`, formDataToSend, {headers: {"Content-Type": "multipart/form-data"}})
+    api.post("/books", formDataToSend, {headers: {'Content-Type': 'multipart/form-data'}})
       .then(() => {
         nav("/books");
         Swal.fire({
-          title: "Changes Saved!",
-          text: "The book has been successfully updated!",
+          title: "Book Saved!",
+          text: "The book has been successfully added!",
           icon: "success"
         });
       })
       .catch(err => console.log(err));
   }
 
+  //return
   return (
     <div className="min-h-screen flex flex-col justify-center items-center">
       <BackButton />
-      <h1 className="font-bold text-5xl text-center m-4">Edit Book</h1>
-      <BookForm formData={formData} handleImageChange={handleImageChange} imagePreview={imagePreview}
-      handleChange={handleChange}  handleGenreChange={handleGenreChange} handleSubmit={handleSubmit} />
+      <h1 className="font-bold text-3xl md:text-5xl text-center m-4">Add New Book</h1>
+      <BookForm formData={formData} 
+        handleChange={handleChange} handleSubmit={handleSubmit} handleGenreChange={handleGenreChange}
+        handleImageChange={handleImageChange} imagePreview={imagePreview} />
     </div>
   )
 }
 
-export default EditBookPage
+export default AddBookPage

@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-const bookSchema = mongoose.Schema({
+const bookSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true
@@ -30,4 +30,5 @@ const bookSchema = mongoose.Schema({
     timestamps: true
 });
 
-export const Book = mongoose.model("book", bookSchema);
+const Book = mongoose.model("book", bookSchema);
+module.exports = Book;
