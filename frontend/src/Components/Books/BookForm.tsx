@@ -1,5 +1,5 @@
 import React from "react"
-import { genres } from "../types/genres"
+import { genres } from "../../types/genres"
 
 interface Props {
     formData: {

@@ -10,13 +10,15 @@ const DeleteBookPage = () => {
   //delete
   const handleDelete = () => {
     api.delete(`/books/${id}`)
-      .then(() => {
-        nav("/books");
-        Swal.fire({
-          title: "Deleted",
-          text: "The book has been removed.",
-          icon: "success"
-        });
+      .then((res) => {
+        if (res.data.success) {
+          nav("/books");
+          Swal.fire({
+            title: "Deleted",
+            text: "The book has been removed.",
+            icon: "success"
+          });
+        }
       })
       .catch(err => console.log(err));
   }
@@ -29,11 +31,11 @@ const DeleteBookPage = () => {
 
       <div className="flex gap-2.5 justify-center text-xl">
         <button className="button button-delete"
-                onClick={handleDelete}>
+          onClick={handleDelete}>
           Delete Book
         </button>
         <button className="button"
-                onClick={() => nav("/books")}>
+          onClick={() => nav("/books")}>
           Cancel
         </button>
       </div>

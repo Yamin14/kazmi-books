@@ -1,7 +1,7 @@
 import { FormEvent } from "react";
 import { AuthFormData, AuthFormField } from "../../types/AuthFormField"
 import { useBookNav } from "../../types/openPages";
-import BackButton from "../BackButton";
+import BackButton from "../Nav/BackButton";
 
 interface Props {
     title: string;

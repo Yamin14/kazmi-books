@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const { userVerification } = require('../middleware/AuthMiddleware');
 const { addBook, getAllBooks, updateBook, deleteBook, getOneBook } = require('../controllers/booksController')
 
 const router = express.Router();
@@ -13,9 +14,9 @@ const upload = multer({ storage });
 
 //routes
 router.get('/', getAllBooks)
-    .post("/", upload.single('cover'), addBook)
-    .put("/:id", upload.single('cover'), updateBook)
+    .post("/", userVerification, upload.single('cover'), addBook)
+    .put("/:id", userVerification, upload.single('cover'), updateBook)
     .get("/:id", getOneBook)
-    .delete("/:id", deleteBook);
+    .delete("/:id", userVerification, deleteBook);
 
 module.exports = router;

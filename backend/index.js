@@ -11,7 +11,12 @@ const AuthRoute = require("./routes/AuthRoute");
 const app = express();
 
 //cors and json
-app.use(cors());
+app.use(cors({
+    origin: true, // Allow all origins temporarily for debugging
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static("uploads"));

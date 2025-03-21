@@ -1,39 +1,55 @@
 import { useNavigate } from "react-router";
-import { useCookies } from "react-cookie";
+import useCookie from "react-use-cookie";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import api from "../api";
+import { User } from "../types/User";
 
 const useAuth = () => {
     const nav = useNavigate();
-    const [cookies, removeCookie] = useCookies(["token"]);
-    const [user, setUser] = useState(null);
+    const [userToken, setUserToken, removeUserToken] = useCookie("token", '0');
+    const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
     //verify cookie
     useEffect(() => {
         const verifyCookie = async () => {
 
-            if (!cookies.token) {
-                nav("/login");
+            // if no token cookie found
+            if (!userToken) {
+                console.log("No token cookie found in useCookies hook");
+                setUser(null);
                 setLoading(false);
                 return;
             }
 
             try {
-                const { data } = await api.post("/auth", {}, { withCredentials: true });
-                if (data.status) {
+                // attempt to verify token
+                console.log("Attempting to verify token...");
+                const { data } = await api.post("/auth", {}, {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log("Auth response:", data);
+
+                // if token is valid
+                if (data.success) {
                     setUser(data.user);
-                    toast.success(`Welcome back, ${data.user.username}!`, {position: "top-right"});
+                    toast.success(`Welcome back, ${data.user.username}!`, { position: "top-right" });
 
                 } else {
-                    removeCookie("token", cookies.token);
-                    nav("/login");
+                    console.log("Auth verification failed");
+                    removeUserToken();
+                    setUser(null);
                 }
 
             } catch (error) {
-                removeCookie("token", cookies.token);
-                nav("/login");
+                console.error("Auth verification error:", error);
+                removeUserToken();
+                setUser(null);
             } finally {
                 setLoading(false);
             }
@@ -41,12 +57,26 @@ const useAuth = () => {
         }
 
         verifyCookie();
-    }, [cookies, nav, removeCookie]);
+    }, [userToken, nav]);
 
     //logout
-    const logout = () => {
-        removeCookie("token", cookies.token);
-        nav("/login");
+    const logout = async () => {
+        try {
+            // Call backend to invalidate token
+            await api.post("/auth/logout", {}, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+        } catch (error) {
+            console.error("Logout error:", error);
+        } finally {
+            // Remove frontend cookie and state regardless of backend success
+            removeUserToken();
+            setUser(null);
+            nav("/auth/login");
+        }
     }
 
     return { user, loading, logout };

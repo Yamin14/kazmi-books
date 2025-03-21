@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react'
 import { useLocation } from 'react-router';
 import Loading from './Loading';
-const Navbar = React.lazy(() => import('./Navbar'));
+const Navbar = React.lazy(() => import('./Nav/Navbar'));
 const Footer = React.lazy(() => import('./Footer'));
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

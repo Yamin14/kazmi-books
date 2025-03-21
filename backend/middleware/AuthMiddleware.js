@@ -2,23 +2,34 @@ const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
 
-const userVerification = (req, res) => {
+const userVerification = (req, res, next) => {
     const token = req.cookies.token;
+    //not signed in
     if (!token) {
-        return res.json({status: false});
+        return res.status(401).json({success: false, message: "Please sign in to continue."});
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+    //verify token
+    jwt.verify(token, process.env.TOKEN_KEY, async (err, decoded) => {
         if (err) {
-            return res.json({status: false});
+            return res.status(401).json({success: false, message: "Invalid token"});
         }
 
-        const user = await User.findById(decoded.id);
-        if (!user) {
-            return res.json({status: false});
+        try {
+            const user = await User.findById(decoded.id);
+            if (!user) {
+                return res.status(401).json({success: false, message: "User not found"});
+            }
+            
+            // Attach user to request object so other routes can use it
+            req.user = user;
+            
+            // Continue to the next middleware/route handler
+            next();
+            
+        } catch (error) {
+            return res.status(500).json({success: false, message: "Server error"});
         }
-
-        return res.json({status: true, user: user});
     });
 }
 

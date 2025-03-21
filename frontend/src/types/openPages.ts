@@ -33,19 +33,25 @@ export const useBookNav = () => {
         nav(`/books/${id}`);
     }
 
-    //details page
+    //signup page
     const OpenSignupPage = () => {
         nav(`/auth/signup`);
     }
 
-    //details page
+    //login page
     const OpenLoginPage = () => {
         nav(`/auth/login`);
     }
 
+    //logout page
+    const OpenLogoutPage = () => {
+        nav(`/auth/logout`);
+    }
+
     return {
         OpenHomePage, OpenAddBookPage, OpenEditBookPage, OpenDeleteBookPage,
-        OpenBooksPage, OpenBookDetailsPage, OpenSignupPage, OpenLoginPage
+        OpenBooksPage, OpenBookDetailsPage, OpenSignupPage, OpenLoginPage,
+        OpenLogoutPage
     };
 
 }

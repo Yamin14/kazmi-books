@@ -2,13 +2,13 @@ const User = require("../models/userModel");
 const { createSecretToken } = require('../util/SecretToken');
 const bcrypt = require('bcryptjs');
 
-const SignUp = async (req, res, next) => {
+const SignUp = async (req, res) => {
     try {
         const { email, password, username, role = "customer" } = req.body;
         const existingUser = await User.findOne({ email });
 
         if (existingUser) {
-            return res.json({ message: "User already exists" });
+            return res.status(400).json({ success: false, message: "User already exists" });
         }
 
         const hashedPassword = await bcrypt.hash(password, 12)
@@ -17,49 +17,87 @@ const SignUp = async (req, res, next) => {
         const token = createSecretToken(user._id, user.role);
         res.cookie("token", token, {
             withCredentials: true,
-            httpOnly: true
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 24 * 60 * 60 * 1000, // 24 hours
+            path: '/'
         });
 
-        res.status(201).json({ message: "User signed in successfully", user })
-
-        next();
+        res.status(201).json({ success: true, message: "User signed in successfully", user })
 
     } catch (err) {
-        res.status(500).json({ message: "Internal Server Error" });
+        console.error("Signup error:", err);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 }
 
-const LogIn = async (req, res, next) => {
+const LogIn = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
 
         if (!email || !password) {
-            return res.json({ message: "All fields are required" });
+            return res.json({ success: false, message: "All fields are required" });
         }
 
         if (!user) {
-            return res.json({ message: "Incorrect credentials" });
+            return res.status(401).json({ success: false, message: "Incorrect email or password" });
         }
 
         const auth = await bcrypt.compare(password, user.password);
         if (!auth) {
-            return res.json({ message: "Incorrect credentials" });
+            return res.status(401).json({ success: false, message: "Incorrect email or password" });
         }
 
         const token = createSecretToken(user._id, user.role);
         res.cookie("token", token, {
             withCredentials: true,
-            httpOnly: true
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 24 * 60 * 60 * 1000, // 24 hours
+            path: '/'
         });
 
-        res.status(201).json({ message: "User signed in successfully", user })
-
-        next();
+        res.status(201).json({ success: true, message: "User signed in successfully", user })
 
     } catch (err) {
-        res.status(500).json({ message: "Internal Server Error" });
+        console.error("Login error:", err);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 }
 
-module.exports = { SignUp, LogIn };
+const VerifyToken = async (req, res) => {
+    try {
+        // The user is already attached to req by the middleware
+        const user = req.user;
+        if (!user) {
+            return res.status(401).json({ success: false, message: "User not found" });
+        }
+        res.status(200).json({ success: true, user });
+        
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+}
+
+const Logout = async (req, res) => {
+    try {
+        // Clear the token cookie
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/',
+            expires: new Date(0) // Set expiration to past date to remove cookie
+        });
+        
+        res.status(200).json({ success: true, message: "Logged out successfully" });
+    } catch (err) {
+        console.error("Logout error:", err);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+}
+
+module.exports = { SignUp, LogIn, VerifyToken, Logout };

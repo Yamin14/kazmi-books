@@ -1,11 +1,12 @@
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import SearchBar from "./SearchBar";
-import { useBookNav } from "../types/openPages";
+import { useBookNav } from "../../types/openPages";
+import SignUpButton from "../Auth/SignUpButton";
 
 const Navbar = () => {
 
   //nav
-  const { OpenHomePage, OpenSignupPage } = useBookNav();
+  const { OpenHomePage } = useBookNav();
 
   //return
   return (
@@ -21,13 +22,7 @@ const Navbar = () => {
       </div>
 
       <SearchBar />
-
-      {/* responsive sign up button */}
-      <button className="md:flex bg-blue-800 text-white text-sm md:text-xl font-medium
-          px-3 py-1 md:px-4 md:py-2 rounded-lg
-          hover:bg-blue-600 hover:cursor-pointer" onClick={OpenSignupPage}>
-        Sign Up
-      </button>
+      <SignUpButton />
 
     </div>
   )

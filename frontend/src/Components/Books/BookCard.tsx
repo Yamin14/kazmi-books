@@ -1,7 +1,7 @@
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai"
 import { BsInfoCircle } from "react-icons/bs"
-import { Book } from "../types/book"
-import { useBookNav } from "../types/openPages"
+import { Book } from "../../types/book"
+import { useBookNav } from "../../types/openPages"
 
 //props // book
 interface Props {

@@ -3,10 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../../Components/Loading";
 import api from "../../api";
 import { Book } from "../../types/book";
-import BookCard from "../../Components/BookCard";
+import BookCard from "../../Components/Books/BookCard";
 import { useBookNav } from "../../types/openPages";
 import { useSearchStore } from "../../store/searchStore";
-import GenreHeading from "../../Components/GenreHeading";
+import GenreHeading from "../../Components/Books/GenreHeading";
 
 const BooksPage = () => {
 
@@ -81,8 +81,3 @@ const BooksPage = () => {
 }
 
 export default BooksPage
-
-//commands to push to git
-git add .
-git commit -m "added books page"
-git push -u origin main

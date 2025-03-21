@@ -1,16 +1,16 @@
 import { useNavigate, useParams } from "react-router"
-import BookForm from "../../Components/BookForm";
+import BookForm from "../../Components/Books/BookForm";
 import { useEffect, useState } from "react";
 import { FormData } from "../../types/FormData";
 import api from "../../api";
-import BackButton from "../../Components/BackButton";
+import BackButton from "../../Components/Nav/BackButton";
 import Swal from "sweetalert2";
 
 const EditBookPage = () => {
 
   const { id } = useParams();
   const nav = useNavigate();
-  
+
   //form state
   const [formData, setFormData] = useState<FormData>({
     title: "",
@@ -26,7 +26,7 @@ const EditBookPage = () => {
   useEffect(() => {
     api.get(`/books/${id}`)
       .then((res) => {
-        const book = res.data;
+        const book = res.data.data;
         setFormData({
           title: book.title,
           author: book.author,
@@ -59,8 +59,8 @@ const EditBookPage = () => {
   //handle image change
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file){
-      setFormData({...formData, cover: file});
+    if (file) {
+      setFormData({ ...formData, cover: file });
       setImagePreview(URL.createObjectURL(file));
     }
   }
@@ -79,14 +79,16 @@ const EditBookPage = () => {
       publishYear: Number(formData.publishYear)
     }
 
-    api.put(`/books/${id}`, formDataToSend, {headers: {"Content-Type": "multipart/form-data"}})
-      .then(() => {
-        nav("/books");
-        Swal.fire({
-          title: "Changes Saved!",
-          text: "The book has been successfully updated!",
-          icon: "success"
-        });
+    api.put(`/books/${id}`, formDataToSend, { headers: { "Content-Type": "multipart/form-data" } })
+      .then((res) => {
+        if (res.data.success) {
+          nav("/books");
+          Swal.fire({
+            title: "Changes Saved!",
+            text: "The book has been successfully updated!",
+            icon: "success"
+          });
+        }
       })
       .catch(err => console.log(err));
   }
@@ -96,7 +98,7 @@ const EditBookPage = () => {
       <BackButton />
       <h1 className="font-bold text-3xl md:text-5xl text-center m-4">Edit Book</h1>
       <BookForm formData={formData} handleImageChange={handleImageChange} imagePreview={imagePreview}
-      handleChange={handleChange}  handleGenreChange={handleGenreChange} handleSubmit={handleSubmit} />
+        handleChange={handleChange} handleGenreChange={handleGenreChange} handleSubmit={handleSubmit} />
     </div>
   )
 }
