@@ -2,6 +2,7 @@ const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
 
+//middleware to verify user
 const userVerification = (req, res, next) => {
     const token = req.cookies.token;
     //not signed in
@@ -33,4 +34,22 @@ const userVerification = (req, res, next) => {
     });
 }
 
-module.exports = { userVerification };
+//middleware to authorize user
+const restrictTo = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).json({success: false, message: "Unauthorized"});
+        }
+        next();
+    }
+}
+
+//for approved sellers only
+const isApprovedSeller = (req, res, next) => {
+    if (req.user.role !== "seller" || req.user.isApproved !== true) {
+        return res.status(403).json({success: false, message: "Unauthorized"});
+    }
+    next();
+}
+
+module.exports = { userVerification, restrictTo, isApprovedSeller };

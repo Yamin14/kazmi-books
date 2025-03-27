@@ -3,9 +3,11 @@ const config = require('./config');
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const { ensureAdminAccount } = require('./util/EnsureAdminAccount');
 
 const bookRoute = require('./routes/bookRoute');
 const AuthRoute = require("./routes/AuthRoute");
+const AdminRoute = require("./routes/AdminRoute");
 
 //app
 const app = express();
@@ -27,11 +29,14 @@ app.get("/", (req, res) => {
 });
 
 app.use("/books", bookRoute);
+app.use("/admin", AdminRoute);
 app.use("/auth", AuthRoute);
 
 //connect to db
 mongoose.connect(config.mongoUrl)
-    .then(() => {
+    .then(async () => {
+        await ensureAdminAccount();
+
         //listen
         app.listen(config.port, () => {
             console.log("Listening");

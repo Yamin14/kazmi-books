@@ -38,6 +38,11 @@ export const useBookNav = () => {
         nav(`/auth/signup`);
     }
 
+     //seller signup page
+     const OpenSellerSignupPage = () => {
+        nav(`/auth/seller-signup`);
+    }
+
     //login page
     const OpenLoginPage = () => {
         nav(`/auth/login`);
@@ -51,7 +56,7 @@ export const useBookNav = () => {
     return {
         OpenHomePage, OpenAddBookPage, OpenEditBookPage, OpenDeleteBookPage,
         OpenBooksPage, OpenBookDetailsPage, OpenSignupPage, OpenLoginPage,
-        OpenLogoutPage
+        OpenLogoutPage, OpenSellerSignupPage
     };
 
 }

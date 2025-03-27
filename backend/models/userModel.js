@@ -20,11 +20,25 @@ const userSchema = new mongoose.Schema({
         required: true,
         enum: ["admin", "customer", "seller"], 
         default: "customer"
+    },
+    isApproved: {
+        type: Boolean,
+        default: true
     }
 },
 {
     timestamps: true
 });
 
-const User = mongoose.model("user", userSchema);
+// Pre-save middleware to set isApproved based on role
+userSchema.pre('save', function(next) {
+    if (this.role === 'seller') {
+        this.isApproved = false;
+    } else {
+        this.isApproved = true;
+    }
+    next();
+});
+
+const User = mongoose.model("User", userSchema);
 module.exports = User;

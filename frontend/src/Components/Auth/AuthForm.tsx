@@ -16,7 +16,7 @@ const AuthForm: React.FC<Props> = ({
 }) => {
 
     //nav
-    const { OpenLoginPage, OpenSignupPage } = useBookNav();
+    const { OpenLoginPage, OpenSignupPage, OpenSellerSignupPage } = useBookNav();
 
     //return
     return (
@@ -53,12 +53,23 @@ const AuthForm: React.FC<Props> = ({
                     {title}
                 </button>
 
-                {title == "Signup" && <a
+                {/* signup */}
+                {title == "Signup" && 
+                <>
+                <a
                     className="text-white font-medium hover:text-gray-300 hover:cursor-pointer"
                     onClick={OpenLoginPage}>
                     Already a user? Login
-                </a>}
+                </a>
 
+                <a
+                    className="text-white font-medium hover:text-gray-300 hover:cursor-pointer"
+                    onClick={OpenSellerSignupPage}>
+                    Sign up as a Seller
+                </a>
+                </>}
+
+                {/* login */}
                 {title == "Login" && <a
                     className="text-white font-medium hover:text-gray-300 hover:cursor-pointer"
                     onClick={OpenSignupPage}>

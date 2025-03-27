@@ -1,12 +1,13 @@
 import { Navigate, Outlet } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import Loading from "../Loading";
 
 const PublicRoute = () => {
     const { user, loading } = useAuth();
 
     // Show nothing while checking auth status
     if (loading) {
-        return null;
+        return <Loading />;
     }
 
     // If user is logged in, redirect to books page

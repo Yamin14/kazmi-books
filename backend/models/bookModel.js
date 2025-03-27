@@ -24,6 +24,17 @@ const bookSchema = new mongoose.Schema({
     publishYear: {
         type: Number,
         required: true
+    },
+    stockQuantity: {
+        type: Number,
+        required: true,
+        min: 0,
+        default: 0
+    },
+    seller: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 },
 {

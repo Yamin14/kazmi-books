@@ -29,21 +29,24 @@ const LogoutPage = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-blue-800 mb-4">Logout Confirmation</h1>
-        <p className="text-gray-700 text-lg mb-6">
-          Are you sure you want to logout, <span className="font-semibold text-blue-800">{user?.username}</span>?
+      <div className="form my-4 mx-auto py-8 pb-4
+                border-2 rounded-2xl w-md md:w-xl shadow-lg
+                flex flex-col gap-4.5 justify-center items-center">
+        
+        <h1 className="font-bold text-3xl md:text-5xl text-center mb-4">Logout Confirmation</h1>
+        <p className="text-white text-xl mb-4">
+          Are you sure you want to logout, <span className="font-semibold">{user?.username}</span>?
         </p>
         <div className="flex justify-center gap-4">
           <button
             onClick={handleLogout}
-            className="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors font-medium"
+            className="cursor-pointer bg-blue-800 text-lg text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors font-medium"
           >
             Logout
           </button>
           <button
             onClick={handleCancel}
-            className="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+            className="cursor-pointer bg-gray-100 text-lg text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium"
           >
             Cancel
           </button>

@@ -5,6 +5,7 @@ import Loading from "./Components/Loading";
 import Layout from "./Components/Layout";
 import ProtectedRoute from "./Components/Auth/ProtectedRoute";
 import PublicRoute from "./Components/Auth/PublicRoute";
+import AdminRoute from "./Components/Auth/AdminRoute";
 
 const HomePage = lazy(() => import("./Pages/HomePage"));
 const BooksPage = lazy(() => import("./Pages/Books/BooksPage"));
@@ -13,9 +14,11 @@ const AddBookPage = lazy(() => import("./Pages/Books/AddBookPage"));
 const EditBookPage = lazy(() => import("./Pages/Books/EditBookPage"));
 const DeleteBookPage = lazy(() => import("./Pages/Books/DeleteBookPage"));
 const SignupPage = lazy(() => import("./Pages/Auth/SignupPage"));
+const SellerSignupPage = lazy(() => import("./Pages/Auth/SellerSignupPage"));
 const LoginPage = lazy(() => import("./Pages/Auth/LoginPage"));
 const LogoutPage = lazy(() => import("./Pages/Auth/LogoutPage"));
-
+const PendingSellers = lazy(() => import("./Pages/Admin/PendingSellers"));
+const PendingSellerDetails = lazy(() => import("./Pages/Admin/PendingSellerDetails"));
 function App() {
 
   return (
@@ -37,8 +40,16 @@ function App() {
           {/* Auth Routes - Only accessible to logged out users */}
           <Route element={<PublicRoute />}>
             <Route path="/auth/signup" element={<SignupPage />} />
+            <Route path="/auth/seller-signup" element={<SellerSignupPage />} />
             <Route path="/auth/login" element={<LoginPage />} />
           </Route>
+
+          {/* Admin Routes */}
+          <Route element={<AdminRoute />}>
+            <Route path="/admin/pending-sellers" element={<PendingSellers />} />
+            <Route path="/admin/pending-sellers/:id" element={<PendingSellerDetails />} />
+          </Route>
+
         </Routes>
       </Suspense>
     </Layout>

@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const Seller = require("../models/sellerModel");
 const { createSecretToken } = require('../util/SecretToken');
 const bcrypt = require('bcryptjs');
 
@@ -11,9 +12,35 @@ const SignUp = async (req, res) => {
             return res.status(400).json({ success: false, message: "User already exists" });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 12)
-        const user = await User.create({ email, password: hashedPassword, username, role });
+        // Validate seller-specific fields
+        if (role === "seller") {
+            const { storeName, storeLocation } = req.body;
+            if (!storeName || !storeLocation) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: "Store name and location are required for seller registration" 
+                });
+            }
+        }
 
+        const hashedPassword = await bcrypt.hash(password, 12)
+        const user = await User.create({
+            email,
+            password: hashedPassword,
+            username,
+            role
+        });
+
+        //seller only
+        if (role === "seller") {
+            await Seller.create({
+                user: user._id,
+                storeName: req.body.storeName,
+                storeLocation: req.body.storeLocation
+            })
+        }
+
+        //create token
         const token = createSecretToken(user._id, user.role);
         res.cookie("token", token, {
             withCredentials: true,
@@ -76,7 +103,7 @@ const VerifyToken = async (req, res) => {
             return res.status(401).json({ success: false, message: "User not found" });
         }
         res.status(200).json({ success: true, user });
-        
+
     } catch (err) {
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
@@ -92,7 +119,7 @@ const Logout = async (req, res) => {
             path: '/',
             expires: new Date(0) // Set expiration to past date to remove cookie
         });
-        
+
         res.status(200).json({ success: true, message: "Logged out successfully" });
     } catch (err) {
         console.error("Logout error:", err);
